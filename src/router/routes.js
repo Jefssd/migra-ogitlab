@@ -1,5 +1,6 @@
 const routes = [
   {
+<<<<<<< HEAD
     path: '/AgendarConsultas',
     component: () => import('layouts/MainLayout.vue'),
     children: [
@@ -14,6 +15,14 @@ const routes = [
       { path: '/LoginInicio', name: 'Login', component: () => import('src/pages/LoginInicio.vue') },
       { path: '/Criar', name: 'Criar', component: () => import('pages/CriarConta.vue') }
 
+=======
+    path: '/index',
+    component: () => import('layouts/MainLayout.vue'),
+    children: [
+      { path: '', component: () => import('pages/IndexPage.vue'), name: 'index' }, 
+      { path: '/cadastro-cliente', component: () => import('pages/cadastro-cliente.vue'), name: 'cadastro-cliente' }, 
+      { path: '/lista-clientes', component: () => import('pages/lista-clientes.vue'), name: 'lista-clientes' }
+>>>>>>> 32d4f7579a5d328a53750c30abdeb961ccaa87ca
     ]
   },
 
@@ -21,7 +30,10 @@ const routes = [
   // but you can also remove it
   {
     path: '/:catchAll(.*)*',
+<<<<<<< HEAD
     redirect: '/LoginInicio',
+=======
+>>>>>>> 32d4f7579a5d328a53750c30abdeb961ccaa87ca
     component: () => import('pages/ErrorNotFound.vue')
   }
 ]
