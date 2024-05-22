@@ -1,8 +1,4 @@
-<<<<<<< HEAD
 # Quasar crud (quasar-c)
-=======
-# Quasar App (quasar-project)
->>>>>>> 32d4f7579a5d328a53750c30abdeb961ccaa87ca
 
 A Quasar Project
 

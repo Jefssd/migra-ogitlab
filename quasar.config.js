@@ -80,10 +80,7 @@ module.exports = configure(function (/* ctx */) {
     // Full list of options: https://v2.quasar.dev/quasar-cli-vite/quasar-config-js#devServer
     devServer: {
       // https: true
-<<<<<<< HEAD
       port: 8080,
-=======
->>>>>>> 32d4f7579a5d328a53750c30abdeb961ccaa87ca
       open: true // opens browser window automatically
     },
 
@@ -192,11 +189,7 @@ module.exports = configure(function (/* ctx */) {
       builder: {
         // https://www.electron.build/configuration/configuration
 
-<<<<<<< HEAD
         appId: 'quasar-c'
-=======
-        appId: 'quasar-project'
->>>>>>> 32d4f7579a5d328a53750c30abdeb961ccaa87ca
       }
     },
 

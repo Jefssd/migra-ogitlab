@@ -1,5 +1,3 @@
-Para modificar o layout apenas para tablets e celulares e manter o layout atual para computadores, você pode usar media queries CSS para aplicar estilos diferentes com base no tamanho da tela. Aqui está o código atualizado para isso:
-
 ```html
 <template>
   <div class="centered-box">

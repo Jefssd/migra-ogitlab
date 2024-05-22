@@ -1,14 +1,8 @@
 <template>
   <q-item
     clickable
-<<<<<<< HEAD
     :to="route"
     exact
-=======
-    tag="a"
-    target="_blank"
-    :href="link"
->>>>>>> 32d4f7579a5d328a53750c30abdeb961ccaa87ca
   >
     <q-item-section
       v-if="icon"
@@ -40,15 +34,9 @@ export default defineComponent({
       default: ''
     },
 
-<<<<<<< HEAD
     route: {
       type: String,
       default: ''
-=======
-    link: {
-      type: String,
-      default: '#'
->>>>>>> 32d4f7579a5d328a53750c30abdeb961ccaa87ca
     },
 
     icon: {

@@ -13,7 +13,6 @@
       <label class="salvar-senha-label">
         <q-toggle v-model="salvarSenha" color="secondary" label="Salvar Senha" />
       </label>
-      <q-btn flat color="primary" label="Registrar" type="button" text-color="white" @click="irParaRegistro"/>
       <q-btn flat color="secondary" label="Entrar" type="button" text-color="white" @click="fazerLogin"/>
     </form>
   </div>
@@ -112,19 +111,14 @@ export default {
     const router = useRouter()
 
     const fazerLogin = () => {
-      router.push({ name: 'AgendarConsultas' })
-    }
-
-    const irParaRegistro = () => {
-      router.push({ name: 'Criar' })
+      router.push({ name: 'ProdutosProcedimentos' })
     }
 
     return {
       login,
       senha,
       salvarSenha,
-      fazerLogin,
-      irParaRegistro
+      fazerLogin
     }
   }
 }

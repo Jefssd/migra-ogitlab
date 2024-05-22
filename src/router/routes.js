@@ -1,40 +1,26 @@
 const routes = [
   {
-<<<<<<< HEAD
     path: '/AgendarConsultas',
     component: () => import('layouts/MainLayout.vue'),
-    children: [
-      { path: '/AgendarConsultas', name: 'AgendarConsultas', component: () => import('pages/AgendarConsultas.vue') },
-      { path: '/Consultas', name: 'Consultas', component: () => import('pages/ConsultasAtendimentos.vue') }
+    children: [ // Rota padrão ao acessar /AgendarConsultas
+      { path: 'ProdutosProcedimentos', name: 'ProdutosProcedimentos', component: () => import('pages/ProdutosProcedimentos.vue') },
+      { path: 'Agendamentos', name: 'Agendamentos', component: () => import('pages/AgendamentosPendentes.vue') },
+      { path: 'Agendados', name: 'Agendados', component: () => import('pages/AgendadosCliente.vue') },
+      { path: 'ProdutosCadastrados', name: 'ProdutosCadastrados', component: () => import('pages/ProdutosCadastrados.vue') },
+      { path: 'HorariosDisponiveis', name: 'HorariosDisponiveis', component: () => import('pages/HorariosDisponiveis.vue') }
     ]
   },
   {
     path: '/LoginInicio',
     component: () => import('layouts/LoginLayout.vue'),
     children: [
-      { path: '/LoginInicio', name: 'Login', component: () => import('src/pages/LoginInicio.vue') },
-      { path: '/Criar', name: 'Criar', component: () => import('pages/CriarConta.vue') }
-
-=======
-    path: '/index',
-    component: () => import('layouts/MainLayout.vue'),
-    children: [
-      { path: '', component: () => import('pages/IndexPage.vue'), name: 'index' }, 
-      { path: '/cadastro-cliente', component: () => import('pages/cadastro-cliente.vue'), name: 'cadastro-cliente' }, 
-      { path: '/lista-clientes', component: () => import('pages/lista-clientes.vue'), name: 'lista-clientes' }
->>>>>>> 32d4f7579a5d328a53750c30abdeb961ccaa87ca
+      { path: '', name: 'Login', component: () => import('pages/LoginInicio.vue') }
     ]
   },
-
-  // Always leave this as last one,
-  // but you can also remove it
   {
     path: '/:catchAll(.*)*',
-<<<<<<< HEAD
     redirect: '/LoginInicio',
-=======
->>>>>>> 32d4f7579a5d328a53750c30abdeb961ccaa87ca
-    component: () => import('pages/ErrorNotFound.vue')
+    component: () => import('pages/ErrorNotFound.vue') // Rota para página 404
   }
 ]
 
