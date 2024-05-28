@@ -2,13 +2,14 @@
   <q-page padding>
     <q-card>
       <q-card-section>
-        <div class="text-h6" style="color: #3fa6b8  ">Horários Disponíveis</div>
+        <div class="text-h6" style="color: #3fa6b8">Horários Disponíveis</div>
       </q-card-section>
 
       <q-card-section class="q-gutter-md">
+        <q-input v-model="selectedDate" type="date" label="Data" :color="'#21BA45'" class="q-mb-md" @input="initializeHours" />
         <div class="row justify-start">
           <q-btn
-            v-for="hour in hours"
+            v-for="hour in getHoursForSelectedDate"
             :key="hour.time"
             :label="hour.time"
             :style="{ backgroundColor: hour.available ? '#21BA45' : 'red', color: 'white' }"
@@ -51,46 +52,77 @@ export default {
   },
   data () {
     return {
-      hours: [
-        { time: '08:00', available: true },
-        { time: '09:00', available: true },
-        { time: '10:00', available: true },
-        { time: '11:00', available: true },
-        { time: '12:00', available: true },
-        { time: '13:00', available: true },
-        { time: '14:00', available: true },
-        { time: '15:00', available: true },
-        { time: '16:00', available: true },
-        { time: '17:00', available: true }
-      ],
-      newEventTitle: '',
+      hoursByDate: {},
       newEventDate: '',
       newEventTime: '',
-      showDateTimePickers: true
+      selectedDate: '',
+      showDateTimePickers: false
+    }
+  },
+  computed: {
+    getHoursForSelectedDate () {
+      return this.hoursByDate[this.selectedDate] || []
     }
   },
   methods: {
+    initializeHours () {
+      if (this.selectedDate && !this.hoursByDate[this.selectedDate] && this.isWeekday(this.selectedDate)) {
+        this.hoursByDate[this.selectedDate] = this.generateHours()
+      }
+    },
+    generateHours () {
+      const hours = []
+      for (let i = 8; i <= 17; i++) {
+        hours.push({
+          time: `${i.toString().padStart(2, '0')}:00`,
+          available: true
+        })
+      }
+      return hours
+    },
     toggleAvailability (hour) {
       hour.available = !hour.available
     },
     addEvent () {
-      this.hours.push({
+      if (!this.newEventDate || !this.newEventTime) return
+      if (!this.isWeekday(this.newEventDate)) {
+        alert('Só é possível adicionar horários de segunda a sexta-feira.')
+        return
+      }
+
+      const hour = parseInt(this.newEventTime.split(':')[0], 10)
+      if (hour < 8 || hour > 17) {
+        alert('Só é possível adicionar horários entre 08:00 e 17:00.')
+        return
+      }
+
+      if (!this.hoursByDate[this.newEventDate]) {
+        this.hoursByDate[this.newEventDate] = []
+      }
+
+      this.hoursByDate[this.newEventDate].push({
         time: this.newEventTime,
         available: true
       })
-      this.newEventTitle = ''
+
       this.newEventDate = ''
       this.newEventTime = ''
-      this.showDateTimePickers = false
+      this.showDateTimePickers = true
     },
     toggleCalendar () {
       this.showDateTimePickers = !this.showDateTimePickers
     },
     removeHour (hour) {
-      const index = this.hours.findIndex(h => h.time === hour.time)
+      const hours = this.getHoursForSelectedDate
+      const index = hours.findIndex(h => h.time === hour.time)
       if (index !== -1) {
-        this.hours.splice(index, 1)
+        hours.splice(index, 1)
       }
+    },
+    isWeekday (dateString) {
+      const date = new Date(dateString)
+      const day = date.getUTCDay()
+      return day >= 1 && day <= 5
     }
   }
 }
@@ -102,10 +134,9 @@ export default {
   height: 100px;
 }
 .q-mr-sm {
-  margin-right: 10px; /* Ajuste o valor conforme necessário */
+  margin-right: 10px;
 }
 .q-mb-sm {
-  margin-bottom: 10px; /* Ajuste o valor conforme necessário */
+  margin-bottom: 10px;
 }
-
 </style>
