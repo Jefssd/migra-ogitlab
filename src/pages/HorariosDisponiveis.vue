@@ -137,6 +137,6 @@ export default {
   margin-right: 10px;
 }
 .q-mb-sm {
-  margin-bottom: 10px;
+  margin-bottom: 11px;
 }
 </style>
