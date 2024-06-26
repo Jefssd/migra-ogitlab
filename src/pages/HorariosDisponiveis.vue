@@ -1,142 +1,162 @@
 <template>
-  <q-page padding>
-    <q-card>
-      <q-card-section>
-        <div class="text-h6" style="color: #3fa6b8">Horários Disponíveis</div>
-      </q-card-section>
+  <q-page class="q-pa-md">
+    <div class="q-gutter-md">
+      <q-card>
+        <q-card-section>
+          <div class="form-row">
+            <q-input
+              v-model="patientName"
+              label="Nome do Paciente"
+              outlined
+              class="form-item"
+            />
+            <q-input
+              v-model="patientPhone"
+              label="Telefone do Paciente"
+              outlined
+              mask="(##) #####-####"
+              class="form-item"
+            />
+            <q-date
+              v-model="selectedDate"
+              :events="getEvents"
+              :event-color="getEventColor"
+              @change="onDateChange"
+              class="form-item"
+            />
+            <q-time
+              v-model="selectedTime"
+              format24h
+              @input="onTimeSelected"
+              class="form-item"
+            />
+            <q-btn
+              label="Confirmar Agendamento"
+              @click="confirmAppointment"
+              :disable="!selectedDate || !selectedTime || !patientName || !patientPhone"
+              class="form-item"
+            />
+          </div>
+        </q-card-section>
+      </q-card>
 
-      <q-card-section class="q-gutter-md">
-        <q-input v-model="selectedDate" type="date" label="Data" :color="'#21BA45'" class="q-mb-md" @input="initializeHours" />
-        <div class="row justify-start">
-          <q-btn
-            v-for="hour in getHoursForSelectedDate"
-            :key="hour.time"
-            :label="hour.time"
-            :style="{ backgroundColor: hour.available ? '#21BA45' : 'red', color: 'white' }"
-            @click="toggleAvailability(hour)"
-            class="q-btn-square q-mr-sm q-mb-sm"
-            outlined
-          >
-            <q-icon name="close" @click.stop="removeHour(hour)" class="q-ml-xs cursor-pointer" style="color: white" />
-          </q-btn>
-        </div>
-      </q-card-section>
-
-      <q-card-section>
-        <div class="text-h6" style="color: #3fa6b8">Adicionar Novo Horário</div>
-        <q-icon name="event" id="icon-calendario" @click="toggleCalendar" style="cursor: pointer; color: #3fa6b8; font-size: 50px;" />
-        <div v-if="showDateTimePickers" class="row q-col-gutter-md justify-end">
-          <q-btn @click="addEvent" label="Adicionar" :style="{ backgroundColor: '#3fa6b8', color: 'white' }" class="q-mt-md" />
-        </div>
-        <div v-if="showDateTimePickers" class="row q-col-gutter-md">
-          <q-input v-model="newEventDate" type="date" label="Data" :color="'#21BA45'" class="q-col-6" />
-          <q-input v-model="newEventTime" type="time" label="Hora" :color="'#21BA45'" class="q-col-6" />
-        </div>
-      </q-card-section>
-    </q-card>
+      <q-list v-if="appointments.length">
+        <q-item-label>Consultas Marcadas:</q-item-label>
+        <q-item
+          v-for="appointment in appointments"
+          :key="appointment.id"
+        >
+          <q-item-section>
+            <q-card>
+              <q-card-section>
+                <div>
+                  <div><strong>Data:</strong> {{ appointment.date }}</div>
+                  <div><strong>Hora:</strong> {{ appointment.time }}</div>
+                  <div><strong>Nome:</strong> {{ appointment.name }}</div>
+                  <div><strong>Telefone:</strong> {{ appointment.phone }}</div>
+                </div>
+              </q-card-section>
+              <q-card-actions align="right">
+                <q-btn
+                  flat
+                  icon="edit"
+                  @click="editAppointment(appointment)"
+                />
+                <q-btn
+                  flat
+                  icon="delete"
+                  @click="deleteAppointment(appointment.id)"
+                />
+              </q-card-actions>
+            </q-card>
+          </q-item-section>
+        </q-item>
+      </q-list>
+    </div>
   </q-page>
 </template>
 
 <script>
-import { QCardSection, QBtn, QCard, QInput, QIcon, QPage } from 'quasar'
-
 export default {
-  name: 'HorariosDisponiveis',
-  components: {
-    QCardSection,
-    QBtn,
-    QCard,
-    QInput,
-    QIcon,
-    QPage
-  },
   data () {
     return {
-      hoursByDate: {},
-      newEventDate: '',
-      newEventTime: '',
       selectedDate: '',
-      showDateTimePickers: false
-    }
-  },
-  computed: {
-    getHoursForSelectedDate () {
-      return this.hoursByDate[this.selectedDate] || []
+      selectedTime: '',
+      patientName: '',
+      patientPhone: '',
+      appointments: [],
+      editedAppointment: null,
+      events: ['2024-06-14', '2024-06-18', '2024-06-21']
     }
   },
   methods: {
-    initializeHours () {
-      if (this.selectedDate && !this.hoursByDate[this.selectedDate] && this.isWeekday(this.selectedDate)) {
-        this.hoursByDate[this.selectedDate] = this.generateHours()
-      }
+    getEvents (date) {
+      return this.events.includes(date)
     },
-    generateHours () {
-      const hours = []
-      for (let i = 8; i <= 17; i++) {
-        hours.push({
-          time: `${i.toString().padStart(2, '0')}:00`,
-          available: true
+    getEventColor (date) {
+      return date[9] % 2 === 0 ? 'teal' : 'orange'
+    },
+    onDateChange (date) {
+      this.selectedDate = date
+    },
+    onTimeSelected (time) {
+      this.selectedTime = time
+    },
+    confirmAppointment () {
+      if (this.editedAppointment) {
+        this.editedAppointment.date = this.selectedDate
+        this.editedAppointment.time = this.selectedTime
+        this.editedAppointment.name = this.patientName
+        this.editedAppointment.phone = this.patientPhone
+        this.editedAppointment = null
+      } else {
+        this.appointments.push({
+          id: this.appointments.length + 1,
+          date: this.selectedDate,
+          time: this.selectedTime,
+          name: this.patientName,
+          phone: this.patientPhone
         })
       }
-      return hours
+      this.selectedDate = ''
+      this.selectedTime = ''
+      this.patientName = ''
+      this.patientPhone = ''
     },
-    toggleAvailability (hour) {
-      hour.available = !hour.available
+    editAppointment (appointment) {
+      this.selectedDate = appointment.date
+      this.selectedTime = appointment.time
+      this.patientName = appointment.name
+      this.patientPhone = appointment.phone
+      this.editedAppointment = appointment
     },
-    addEvent () {
-      if (!this.newEventDate || !this.newEventTime) return
-      if (!this.isWeekday(this.newEventDate)) {
-        alert('Só é possível adicionar horários de segunda a sexta-feira.')
-        return
-      }
-
-      const hour = parseInt(this.newEventTime.split(':')[0], 10)
-      if (hour < 8 || hour > 17) {
-        alert('Só é possível adicionar horários entre 08:00 e 17:00.')
-        return
-      }
-
-      if (!this.hoursByDate[this.newEventDate]) {
-        this.hoursByDate[this.newEventDate] = []
-      }
-
-      this.hoursByDate[this.newEventDate].push({
-        time: this.newEventTime,
-        available: true
-      })
-
-      this.newEventDate = ''
-      this.newEventTime = ''
-      this.showDateTimePickers = true
-    },
-    toggleCalendar () {
-      this.showDateTimePickers = !this.showDateTimePickers
-    },
-    removeHour (hour) {
-      const hours = this.getHoursForSelectedDate
-      const index = hours.findIndex(h => h.time === hour.time)
-      if (index !== -1) {
-        hours.splice(index, 1)
-      }
-    },
-    isWeekday (dateString) {
-      const date = new Date(dateString)
-      const day = date.getUTCDay()
-      return day >= 1 && day <= 5
+    deleteAppointment (id) {
+      this.appointments = this.appointments.filter(appointment => appointment.id !== id)
     }
   }
 }
 </script>
 
-<style>
-.q-btn-square {
-  width: 100px;
-  height: 100px;
+<style scoped>
+.q-page {
+  max-width: 600px;
+  margin: auto;
 }
-.q-mr-sm {
+.q-card {
+  margin-bottom: 10px;
+}
+.q-card-section {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.form-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+}
+.form-item {
   margin-right: 10px;
-}
-.q-mb-sm {
-  margin-bottom: 11px;
+  margin-bottom: 10px;
 }
 </style>
